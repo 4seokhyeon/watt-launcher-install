@@ -1,288 +1,383 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>와트 모바일 런처 다운로드</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #00C853;
+      --green-dark: #00A846;
+      --green-glow: rgba(0, 200, 83, 0.18);
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --border: #252525;
+      --text: #f0f0f0;
+      --muted: #888;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f5f5f5;
-      color: #222;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 40px 20px 60px;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
     }
 
-    .app-title {
+    /* Logo / Header */
+    .header {
       text-align: center;
-      margin-bottom: 32px;
-    }
-    .app-title h1 {
-      font-size: 24px;
-      font-weight: 700;
-      color: #111;
-    }
-    .app-title p {
-      font-size: 14px;
-      color: #888;
-      margin-top: 6px;
-    }
-
-    /* ── Download Buttons ── */
-    .download-section {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
       margin-bottom: 48px;
+      animation: fadeDown 0.6s ease both;
     }
 
-    .dl-btn {
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 8px 20px;
+      margin-bottom: 28px;
+    }
+
+    .logo-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    .logo-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--green);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    h1 span {
+      color: var(--green);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* Download card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+
+    .version-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .version-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--green);
+      background: var(--green-glow);
+      border: 1px solid rgba(0,200,83,0.3);
+      border-radius: 6px;
+      padding: 4px 10px;
+    }
+
+    .file-size {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .download-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      padding: 16px 24px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: 600;
-      transition: opacity .15s, transform .1s;
-    }
-    .dl-btn:active { transform: scale(.98); opacity: .9; }
-
-    .dl-btn.android {
-      background: #3DDC84;
-      color: #fff;
-    }
-    .dl-btn.ios {
-      background: #000;
-      color: #fff;
-    }
-
-    /* ── Guide Cards ── */
-    .guide-section { display: flex; flex-direction: column; gap: 20px; }
-
-    .card {
-      background: #fff;
+      gap: 12px;
+      width: 100%;
+      padding: 18px;
+      background: var(--green);
+      color: #000;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      border: none;
       border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    .card-header {
-      margin-bottom: 18px;
+    .download-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
     }
-    .badge {
-      display: inline-flex;
-      align-items: center;
+
+    .download-btn:hover {
+      background: var(--green-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 200, 83, 0.35);
+    }
+
+    .download-btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-icon {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Steps */
+    .steps-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      animation: fadeUp 0.6s ease 0.2s both;
+    }
+
+    .steps-title {
       font-size: 13px;
       font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 100px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      font-family: 'Space Mono', monospace;
     }
-    .badge.android { background: #e8fdf0; color: #1a9e55; }
-    .badge.ios     { background: #f0f0f0; color: #333; }
-
-    .steps { display: flex; flex-direction: column; }
 
     .step {
       display: flex;
-      gap: 14px;
-      padding: 12px 0;
-      border-bottom: 1px solid #f0f0f0;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
     }
-    .step:last-child { border-bottom: none; padding-bottom: 0; }
-    .step:first-child { padding-top: 0; }
+
+    .step:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .step:first-of-type {
+      padding-top: 0;
+    }
 
     .step-num {
-      flex-shrink: 0;
-      width: 26px; height: 26px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      background: var(--green-glow);
+      border: 1px solid rgba(0,200,83,0.3);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
       font-size: 12px;
+      color: var(--green);
       font-weight: 700;
-      margin-top: 1px;
     }
-    .card.android .step-num { background: #e8fdf0; color: #1a9e55; }
-    .card.ios .step-num     { background: #f0f0f0; color: #333; }
 
-    .step-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #111;
-      margin-bottom: 3px;
+    .step-content h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
     }
-    .step-desc {
-      font-size: 13px;
-      color: #666;
-      line-height: 1.7;
-    }
-    .step-desc strong { color: #333; font-weight: 600; }
 
-    .tip {
-      margin-top: 16px;
-      background: #fffbea;
-      border-left: 3px solid #f5c518;
-      border-radius: 0 8px 8px 0;
-      padding: 10px 14px;
+    .step-content p {
       font-size: 13px;
-      color: #7a6000;
+      color: var(--muted);
       line-height: 1.6;
     }
-    .tip strong { font-weight: 600; }
 
-    footer {
-      text-align: center;
-      margin-top: 48px;
-      font-size: 12px;
+    .step-content .highlight {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    /* Warning box */
+    .warning {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: rgba(255,180,0,0.07);
+      border: 1px solid rgba(255,180,0,0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 24px;
+    }
+
+    .warning-icon {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 1px;
+    }
+
+    .warning p {
+      font-size: 13px;
       color: #bbb;
+      line-height: 1.6;
+    }
+
+    .warning strong {
+      color: #FFB400;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 12px;
+      color: #444;
+      font-family: 'Space Mono', monospace;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+
+    /* Animations */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--green); }
+      50% { opacity: 0.5; box-shadow: 0 0 3px var(--green); }
     }
   </style>
 </head>
 <body>
-<div class="container">
+  <div class="container">
 
-  <!-- 앱 제목 -->
-  <div class="app-title">
-    <h1>⚡ 와트 모바일 런처</h1>
-    <p>아래 버튼을 눌러 앱을 다운로드하세요</p>
-  </div>
-
-  <!-- 다운로드 버튼 -->
-  <div class="download-section">
-    <a class="dl-btn android"
-       href="https://meet4dev.watttalk.kr/storage/powerstore/mobile/wattmlauncher_v1.0.3.apk">
-      Android 다운로드 (.apk)
-    </a>
-    <a class="dl-btn ios"
-       href="itms-services://?action=download-manifest&url=https://meet4dev.watttalk.kr/storage/powerstore/mobile/manifest.plist">
-      iOS 다운로드 (.ipa)
-    </a>
-  </div>
-
-  <!-- 설치 가이드 -->
-  <div class="guide-section">
-
-    <!-- Android 가이드 -->
-    <div class="card android">
-      <div class="card-header">
-        <span class="badge android">Android 설치 방법</span>
+    <div class="header">
+      <div class="logo-badge">
+        <div class="logo-dot"></div>
+        <span class="logo-text">WaTT CO LTD</span>
       </div>
-      <div class="steps">
+      <h1>와트 모바일<br /><span>런처</span></h1>
+      <p class="subtitle">아래 버튼을 눌러 앱을 다운로드하세요</p>
+    </div>
 
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-body">
-            <div class="step-title">APK 파일 다운로드</div>
-            <div class="step-desc">위 Android 버튼을 눌러 .apk 파일을 다운로드합니다.</div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-body">
-            <div class="step-title">파일 열기</div>
-            <div class="step-desc">다운로드한 .apk 파일을 파일 관리자 또는 알림창에서 탭하여 설치를 시작합니다.</div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-body">
-            <div class="step-title">출처를 알 수 없는 앱 허용</div>
-            <div class="step-desc">
-              설치 도중 <strong>"이 출처의 앱 설치를 허용"</strong> 팝업이 나타나면 <strong>허용</strong>을 눌러주세요.
-            </div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-body">
-            <div class="step-title">Google Play 프로텍트 경고 무시하고 설치</div>
-            <div class="step-desc">
-              <strong>"Play 프로텍트에서 이 앱을 차단했습니다"</strong> 경고가 나타나면<br/>
-              ① 화면 하단 <strong>"그래도 설치"</strong> 또는 <strong>"무시하고 설치"</strong> 탭<br/>
-              ② <strong>"설치"</strong> 버튼을 눌러 완료합니다.
-            </div>
-          </div>
-        </div>
-
+    <div class="card">
+      <div class="version-row">
+        <span class="version-tag">v2.0.0</span>
+        <span class="file-size">57.2 MB · Android</span>
       </div>
-      <div class="tip">
-        💡 <strong>안심하세요.</strong> 구글 플레이 외부 배포 앱은 이 경고가 자동으로 표시됩니다. 와트 모바일 런처는 안전한 앱입니다.
+
+      <!-- ✅ href에 실제 APK 링크를 넣으세요 -->
+      <a class="download-btn" href="https://github.com/4seokhyeon/watt-launcher-install/releases/download/v2.0.0/wattmlauncher_v2.0.0.apk" download>
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Android 다운로드 (.apk)
+      </a>
+
+      <div class="warning">
+        <span class="warning-icon">⚠️</span>
+        <p>설치 시 <strong>"안전하지 않은 앱"</strong> 경고가 표시될 수 있습니다.<br />
+        아래 설치 방법을 따라 <strong>"무시하고 설치"</strong>를 선택해 주세요.</p>
       </div>
     </div>
 
-    <!-- iOS 가이드 -->
-    <div class="card ios">
-      <div class="card-header">
-        <span class="badge ios">iOS 설치 방법</span>
+    <div class="steps-card">
+      <div class="steps-title">Android 설치 방법</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>APK 파일 다운로드</h3>
+          <p>위 Android 버튼을 눌러 .apk 파일을 다운로드합니다.</p>
+        </div>
       </div>
-      <div class="steps">
 
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-body">
-            <div class="step-title">iOS 다운로드 버튼 탭</div>
-            <div class="step-desc">
-              위 iOS 버튼을 탭하면 설치 확인 팝업이 나타납니다.<br/>
-              <strong>"설치"</strong>를 눌러주세요.
-            </div>
-          </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>파일 열기</h3>
+          <p>다운로드한 .apk 파일을 파일 관리자 또는 알림창에서 탭하여 설치를 시작합니다.</p>
         </div>
-
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-body">
-            <div class="step-title">홈 화면에서 설치 완료 확인</div>
-            <div class="step-desc">
-              홈 화면에 와트 모바일 런처 아이콘이 나타나며 다운로드가 진행됩니다.<br/>
-              아이콘의 로딩이 끝날 때까지 기다려주세요.
-            </div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-body">
-            <div class="step-title">개발자 신뢰 설정</div>
-            <div class="step-desc">
-              앱을 처음 실행하면 <strong>"신뢰하지 않는 개발자"</strong> 오류가 나타납니다.<br/><br/>
-              아래 경로로 이동하세요<br/>
-              <strong>설정 → 일반 → VPN 및 기기 관리</strong><br/><br/>
-              개발자 항목 <strong>(com.peng.wattmlauncher)</strong> 을 탭한 뒤<br/>
-              <strong>"신뢰"</strong> 버튼을 눌러주세요.
-            </div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-body">
-            <div class="step-title">앱 실행</div>
-            <div class="step-desc">홈 화면에서 와트 모바일 런처 아이콘을 탭하면 정상적으로 실행됩니다.</div>
-          </div>
-        </div>
-
       </div>
-      <div class="tip">
-        💡 <strong>iOS 16 이상 기준입니다.</strong> 경로가 다를 경우 <strong>설정 → 일반 → 기기 관리</strong>에서 확인하세요.
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>출처를 알 수 없는 앱 허용</h3>
+          <p>설치 중 <span class="highlight">"이 출처의 앱 설치를 허용"</span> 팝업이 나오면 허용합니다.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>경고창 무시하고 설치</h3>
+          <p>Play Protect 경고가 뜨면 <span class="highlight">"무시하고 설치"</span> 또는 <span class="highlight">"검사 없이 설치"</span>를 선택합니다.</p>
+        </div>
       </div>
     </div>
 
+    <div class="footer">
+      © 2026 WaTT CO LTD · 사내 전용 배포
+    </div>
+
   </div>
-
-  <footer>
-    ⚡ 와트 모바일 런처 &copy; 2026
-  </footer>
-
-</div>
 </body>
 </html>
